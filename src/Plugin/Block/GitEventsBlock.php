@@ -59,6 +59,9 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     }
     
     // get the cached events (if exists)
+    /**
+     * @todo add this to the database
+     * */
     $json = json_decode(@file_get_contents('modules/git_events/.events'));
 
     switch($this->config['update']) {
@@ -74,6 +77,7 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
       default:
         $update = 'Y-m-d';
     }
+
     // we only want to update the events once a day (no need to spam Github)
     if(isset($json->timestamp)) {
       if(date('Y-m-d',strtotime('now')) != date($update,$json->timestamp))
@@ -81,7 +85,7 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     }else{
       $json = $this->getLatestGitEvents();  
     }
-    //echo '<pre>';print_r($json );exit();/*REMOVE ME*/
+
     // update the json file
     if(is_array($json)) {
       $json['timestamp'] = strtotime('now');
@@ -89,38 +93,38 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
       $json->timestamp = strtotime('now');
     }
     
+    // try to set the cache
     if(false == @file_put_contents('modules/git_events/.events',json_encode($json)))
       return array(
         '#markup' => '<p>There was an issue writing the events cache file</p>',
         '#allowed_tags' => ['p']
       ); 
     
+    // loop events and build
     $return = '<div class="git_events">';
-
-    $i = 0; // counter
-    foreach($json as $item) {
-      if(isset($item->type)) {
-        $i++;
-        if($i >= $max)continue;
-        switch($item->type) {
-            case 'CreateEvent':
-              $return = $this->CreateEvent($item,$return);
-            break;
-            case 'PushEvent':
-              $return = $this->PushEvent($item,$return);
-            break;
-            case 'IssueCommentEvent':
-              $return = $this->IssueCommentEvent($item,$return);
-            break;
-            case 'IssuesEvent':
-              $return = $this->IssuesEvent($item,$return);
-            break;
-          default:
-            continue;
+      $i = 0; // counter
+      foreach($json as $item) {
+        if(isset($item->type)) {
+          $i++;
+          if($i >= $max)continue;
+          switch($item->type) {
+              case 'CreateEvent':
+                $return = $this->CreateEvent($item,$return);
+              break;
+              case 'PushEvent':
+                $return = $this->PushEvent($item,$return);
+              break;
+              case 'IssueCommentEvent':
+                $return = $this->IssueCommentEvent($item,$return);
+              break;
+              case 'IssuesEvent':
+                $return = $this->IssuesEvent($item,$return);
+              break;
+            default:
+              continue;
+          }
         }
       }
-    }
-    
     $return .= '</div>';
     
     return array(
@@ -157,12 +161,12 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     
     $return = $this->eventHeader($return);
     $return .= '<div class="created">'.date('M j, Y h:i A T',strtotime($item->created_at)).'</div>';
-            $return .= '<div>Project: '.$item->repo->name.'</div>';
-            $return .= '<ul class="commits">';
-            foreach($item->payload->commits as $c) {
-              $return .= '<li>Commit: <a href="'.$this->view_url($c->url).'" target="_blank">'.$c->message.'</a></li>';  
-            }
-            $return .= '</ul>';
+    $return .= '<div>Project: '.$item->repo->name.'</div>';
+    $return .= '<ul class="commits">';
+    foreach($item->payload->commits as $c) {
+      $return .= '<li>Commit: <a href="'.$this->view_url($c->url).'" target="_blank">'.$c->message.'</a></li>';  
+    }
+    $return .= '</ul>';
     $return = $this->eventFooter($item,$return);
     return $return;
   }
@@ -179,9 +183,9 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     
     $return = $this->eventHeader($return);
     $return .= '<div class="created">'.date('M j, Y h:i A T',strtotime($item->payload->issue->updated_at)).'</div>';
-            $return .= '<div>Project: '.$item->repo->name.'</div>';
-            $return .= '<div>Issue: <a href="'.$item->payload->issue->html_url.'" target="_blank">'.$item->payload->issue->title.'</a></div>';  
-            $return .= '<div>Comment: '.substr($item->payload->comment->body,0,150).'...</div>';
+    $return .= '<div>Project: '.$item->repo->name.'</div>';
+    $return .= '<div>Issue: <a href="'.$item->payload->issue->html_url.'" target="_blank">'.$item->payload->issue->title.'</a></div>';  
+    $return .= '<div>Comment: '.substr($item->payload->comment->body,0,150).'...</div>';
     $return = $this->eventFooter($item,$return);
     return $return;
   }
@@ -197,9 +201,9 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     
     $return = $this->eventHeader($return);
     $return .= '<div class="created">'.date('M j, Y h:i A T',strtotime($item->payload->issue->updated_at)).'</div>';
-            $return .= '<div>Project: '.$item->repo->name.'</div>';
-            $return .= '<div>Issue: <a href="'.$item->payload->issue->html_url.'" target="_blank">'.$item->payload->issue->title.'</a></div>';  
-            $return .= '<div>'.substr($item->payload->issue->body,0,150).'...</div>';
+    $return .= '<div>Project: '.$item->repo->name.'</div>';
+    $return .= '<div>Issue: <a href="'.$item->payload->issue->html_url.'" target="_blank">'.$item->payload->issue->title.'</a></div>';  
+    $return .= '<div>'.substr($item->payload->issue->body,0,150).'...</div>';
     $return = $this->eventFooter($item,$return);
     return $return;
   }
@@ -265,6 +269,8 @@ User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KH
    */
   public function blockForm($form, FormStateInterface $form_state) {
     
+    $config = $this->getConfiguration();
+    
     $form = parent::blockForm($form, $form_state);
 
     $config = $this->getConfiguration();
@@ -304,14 +310,14 @@ User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KH
     $form['gitevents_block_update'] = array (
       '#type' => 'select',
       '#title' => $this->t('How often should the cache be updated'),
-      '#options' => [
+      '#default_value' => (isset($config['update']) ? $config['update'] : 1),
+      '#options' => array(
         '1' => $this->t('Once Daily'),
         '2' => $this->t('Once Hourly'),
         '3' => $this->t('Every Refresh')
-      ]
+      )
     );
     return $form;
-    
   }
   /**
    * {@inheritdoc}
