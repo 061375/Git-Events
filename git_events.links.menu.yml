@@ -1,0 +1,6 @@
+git_events.admin:
+  title: 'GIT Events Module'
+  description: 'GIT Repository Events Feed'
+  parent: system.admin_config_development
+  route_name: git_events.content
+  weight: 100

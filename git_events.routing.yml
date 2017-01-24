@@ -1,0 +1,7 @@
+git_events.content:
+  path: '/git_events'
+  defaults:
+    _controller: '\Drupal\git_events\Controller\GitEventsController::content'
+    _title: 'GIT Events'
+  requirements:
+    _permission: 'access content'

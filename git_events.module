@@ -1,0 +1,5 @@
+<?php
+
+function git_events_preprocess_page(&$variables) {
+  $variables['#attached']['library'][] = 'git_events/git_events_lib';
+}

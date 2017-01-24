@@ -1,0 +1,34 @@
+#block-gitevents {
+    top: -91px;
+    position: relative;
+}
+#block-gitevents h2 {
+    font-size: 2.4em;
+}
+.git_events a {
+    text-decoration: none;
+    color: #7a7367;
+    background: #fff;
+}
+.git_events .links a {
+    background: #d4cfc6;
+    margin: 3px 4em 3px 0;
+    padding: 1px 5px;
+    font-size: 15px;
+}
+.git_events .fltleft { float: left}
+.git_events .fltright { float: right}
+.git_events .clear {clear: both}
+.git_event {
+    margin: 15px 0 0px 0;
+    border-bottom: solid 1px;
+    padding-bottom: 15px;
+}
+.git_event  .created {
+    font-size: 1.1em;
+    padding: 0 0 5px 0;
+}
+.git_event .commits {
+    list-style: none;
+    margin: 5px 0;
+}

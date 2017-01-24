@@ -1,0 +1,6 @@
+name: GIT Events Module
+description: Displays Latest GIT Repo Events
+package: Git
+type: module
+version: 1.0
+core: 8.x
