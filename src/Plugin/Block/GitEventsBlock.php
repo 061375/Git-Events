@@ -94,7 +94,8 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     }
     
     // try to set the cache
-    if(false == @file_put_contents('modules/git_events/.events',json_encode($json)))
+    
+    if(false == file_put_contents('modules/Git-Events/.events',json_encode($json)))
       return array(
         '#markup' => '<p>There was an issue writing the events cache file</p>',
         '#allowed_tags' => ['p']

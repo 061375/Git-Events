@@ -3,7 +3,17 @@
     position: relative;
 }
 #block-gitevents h2 {
-    font-size: 2.4em;
+    margin-top: 40px;
+}
+@media screen and (max-width: 769px) {
+    #block-gitevents h2 {
+        margin-top: 60px;
+    }   
+}
+@media screen and (max-width: 769px) {
+    #block-gitevents {
+        top: inherit;   
+    }
 }
 .git_events a {
     text-decoration: none;
