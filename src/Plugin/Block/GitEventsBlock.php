@@ -98,7 +98,8 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     if(false == file_put_contents('modules/Git-Events/.events',json_encode($json)))
       return array(
         '#markup' => '<p>There was an issue writing the events cache file</p>',
-        '#allowed_tags' => ['p']
+        '#allowed_tags' => ['p'],
+		'#cache'=>array('max-age'=>0) 
       ); 
     
     // loop events and build
@@ -130,7 +131,8 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     
     return array(
       '#markup' => $return,
-      '#allowed_tags' => ['div','h3','4','a','p','ul','li']
+      '#allowed_tags' => ['div','h3','4','a','p','ul','li'],
+	  '#cache'=>array('max-age'=>0) 
     );
   }
   /**
