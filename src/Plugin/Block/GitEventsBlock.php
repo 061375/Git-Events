@@ -167,7 +167,7 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     $return .= '<div>Project: '.$item->repo->name.'</div>';
     $return .= '<ul class="commits">';
     foreach($item->payload->commits as $c) {
-      $return .= '<li>Commit: <a href="'.$this->view_url($c->url).'" target="_blank">'.$c->message.'</a></li>';  
+      $return .= '<li>Commit: <a href="'.$this->view_url($c->url).'" target="_blank" rel="noopener">'.$c->message.'</a></li>';  
     }
     $return .= '</ul>';
     $return = $this->eventFooter($item,$return);
@@ -187,7 +187,7 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     $return = $this->eventHeader($return);
     $return .= '<div class="created">'.date('M j, Y h:i A T',strtotime($item->payload->issue->updated_at)).'</div>';
     $return .= '<div>Project: '.$item->repo->name.'</div>';
-    $return .= '<div>Issue: <a href="'.$item->payload->issue->html_url.'" target="_blank">'.$item->payload->issue->title.'</a></div>';  
+    $return .= '<div>Issue: <a href="'.$item->payload->issue->html_url.'" target="_blank" rel="noopener">'.$item->payload->issue->title.'</a></div>';  
     $return .= '<div>Comment: '.substr($item->payload->comment->body,0,150).'...</div>';
     $return = $this->eventFooter($item,$return);
     return $return;
@@ -205,7 +205,7 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
     $return = $this->eventHeader($return);
     $return .= '<div class="created">'.date('M j, Y h:i A T',strtotime($item->payload->issue->updated_at)).'</div>';
     $return .= '<div>Project: '.$item->repo->name.'</div>';
-    $return .= '<div>Issue: <a href="'.$item->payload->issue->html_url.'" target="_blank">'.$item->payload->issue->title.'</a></div>';  
+    $return .= '<div>Issue: <a href="'.$item->payload->issue->html_url.'" target="_blank" rel="noopener">'.$item->payload->issue->title.'</a></div>';  
     $return .= '<div>'.substr($item->payload->issue->body,0,150).'...</div>';
     $return = $this->eventFooter($item,$return);
     return $return;
@@ -238,7 +238,7 @@ class GitEventsBlock extends BlockBase  implements BlockPluginInterface {
   private function eventFooter($item,$return)
   {
     $return .= '<div class="links">';
-    $return .= '<a href="'.$this->view_url($item->repo->url).'" target="_blank" class="fltleft">VIEW PROJECT</a>';
+    $return .= '<a href="'.$this->view_url($item->repo->url).'" target="_blank" rel="noopener" class="fltleft">VIEW PROJECT</a>';
     $return .= '</div><div class="clear"></div></div>';
     return $return;
   }
